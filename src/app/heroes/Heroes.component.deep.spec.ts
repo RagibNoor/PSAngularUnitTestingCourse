@@ -50,8 +50,21 @@ describe('heroes component deep Test ', () => {
     childComponents[1].query(By.css('button')).triggerEventHandler('click',{stopPropagation: ()=>{}})
     // manually emit the delete event
     childComponents[1].componentInstance.delete.emit(undefined);
-    //trigger child component delete event 
+    //trigger child component delete event
     childComponents[1].triggerEventHandler('delete',{stopPropagation: ()=>{}})
     expect(mockComponent.componentInstance.delete).toHaveBeenCalledWith(heroes[1]);
+  });
+  it('should add a new hero after trigger the add btn', () => {
+    mockHeroService.getHeroes.and.returnValue(of(heroes))
+    mockComponent.detectChanges();
+    let newHeroName = 'dr strange'
+    mockHeroService.addHero.and.returnValue(of( {id:  4, name: newHeroName, strength: 11}))
+
+    let inputElement = mockComponent.debugElement.query(By.css('input')).nativeElement;
+    inputElement.value = newHeroName;
+
+    mockComponent.detectChanges();
+    mockComponent.debugElement.queryAll(By.css('button'))[0].triggerEventHandler('click', null);
+    expect(mockComponent.componentInstance.heroes[3].name).toBe(newHeroName);
   });
 })
