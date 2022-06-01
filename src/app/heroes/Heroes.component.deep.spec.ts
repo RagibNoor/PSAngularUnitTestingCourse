@@ -39,4 +39,19 @@ describe('heroes component deep Test ', () => {
       expect(mockChildComponents[i].componentInstance.hero).toBe(heroes[i])
     }
   });
+  it(`Should call hero service delete method when trigger the delete btn from hero component`,  () => {
+    //find the delete method and watch it , watch to see if it is invoked
+    spyOn(mockComponent.componentInstance, 'delete')
+    mockHeroService.getHeroes.and.returnValue(of(heroes))
+    mockComponent.detectChanges();
+
+    let childComponents = mockComponent.debugElement.queryAll(By.directive(HeroComponent))
+    // trigger btn click from child component
+    childComponents[1].query(By.css('button')).triggerEventHandler('click',{stopPropagation: ()=>{}})
+    // manually emit the delete event
+    childComponents[1].componentInstance.delete.emit(undefined);
+    //trigger child component delete event 
+    childComponents[1].triggerEventHandler('delete',{stopPropagation: ()=>{}})
+    expect(mockComponent.componentInstance.delete).toHaveBeenCalledWith(heroes[1]);
+  });
 })

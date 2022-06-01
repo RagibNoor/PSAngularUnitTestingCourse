@@ -30,4 +30,5 @@ describe('Hero Service test', () =>{
       expect(req.request.method).toBe('GET');
     }));
   })
+
 })
